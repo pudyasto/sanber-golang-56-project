@@ -38,7 +38,7 @@ func GetLoginCanvasser(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&canvasser)
 	if err != nil {
-		panic(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 	}
 
 	var (
@@ -50,7 +50,7 @@ func GetLoginCanvasser(c *gin.Context) {
 
 	dataCanvasser, err := repository.GetLoginCanvasser(database.DbConnection, username)
 
-	if checkPasswordHash(password, dataCanvasser[0].Password) {
+	if len(dataCanvasser) > 1 && checkPasswordHash(password, dataCanvasser[0].Password) {
 		if err != nil {
 			result = gin.H{
 				"code":   500,
