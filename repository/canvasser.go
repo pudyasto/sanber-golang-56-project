@@ -6,8 +6,8 @@ import (
 	"sanber-golang-56-paw/structs"
 )
 
-func GetAllCanvasser(db *sql.DB) (err error, results []structs.Canvasser) {
-	sql := "SELECT * FROM canvasser"
+func GetAllCanvasser(db *sql.DB) (results []structs.Canvasser, err error) {
+	sql := "SELECT id, code, name, phone, username FROM canvasser"
 
 	rows, err := db.Query(sql)
 
@@ -20,7 +20,7 @@ func GetAllCanvasser(db *sql.DB) (err error, results []structs.Canvasser) {
 	for rows.Next() {
 		var canvasser = structs.Canvasser{}
 
-		err = rows.Scan(&canvasser.Id, &canvasser.Code, &canvasser.Name, &canvasser.Phone, &canvasser.Username, &canvasser.Password)
+		err = rows.Scan(&canvasser.Id, &canvasser.Code, &canvasser.Name, &canvasser.Phone, &canvasser.Username)
 		if err != nil {
 			panic(err)
 		}

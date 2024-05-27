@@ -26,6 +26,7 @@ func GetAllCanvasser(c *gin.Context) {
 		}
 	} else {
 		result = gin.H{
+			"code":   200,
 			"result": canvasser,
 		}
 	}
