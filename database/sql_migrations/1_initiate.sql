@@ -41,6 +41,7 @@ CREATE TABLE public.stock
     canvasser_id bigint NOT NULL,
     qty bigint NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
+    CONSTRAINT uq_stock_item_canvasser UNIQUE (item_id, canvasser_id),
     CONSTRAINT fk_stock_item FOREIGN KEY (item_id)
         REFERENCES public.item (id) MATCH SIMPLE
         ON UPDATE NO ACTION

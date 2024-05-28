@@ -57,6 +57,9 @@ func main() {
 	router.GET("/customer", controllers.GetAllCustomer)
 	router.GET("/stock", controllers.GetAllStock)
 
+	router.GET("/trnsales", controllers.GetAllTrnSales)
+	router.GET("/trnsalesdetail", controllers.GetAllTrnSalesDetail)
+
 	// Group route dengan middleware BasicAuth
 	authorized := router.Group("/", Auth())
 	{
@@ -90,6 +93,21 @@ func main() {
 			stock.POST("/", controllers.InsertStock)
 			stock.PUT("/:item_id/:canvasser_id", controllers.UpdateStock)
 			stock.DELETE("/:item_id/:canvasser_id", controllers.DeleteStock)
+		}
+
+		trnsales := authorized.Group("/trnsales")
+		{
+
+			trnsales.POST("/", controllers.InsertTrnSales)
+			trnsales.PUT("/:id", controllers.UpdateTrnSales)
+			trnsales.DELETE("/:id", controllers.DeleteTrnSales)
+		}
+
+		trnsalesdetail := authorized.Group("/trnsalesdetail")
+		{
+			trnsalesdetail.POST("/", controllers.InsertTrnSalesDetail)
+			trnsalesdetail.PUT("/:id", controllers.UpdateTrnSalesDetail)
+			trnsalesdetail.DELETE("/:id", controllers.DeleteTrnSalesDetail)
 		}
 	}
 
