@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 	"sanber-golang-56-paw/database"
 	"sanber-golang-56-paw/repository"
@@ -44,8 +45,10 @@ func InsertStock(c *gin.Context) {
 	}
 
 	existStock := checkExistStock(database.DbConnection, stock.ItemId, stock.CanvasserId)
+	fmt.Sprintln(existStock)
+
 	// Kondisi jika stok sudah ada maka akan di update data qty nya
-	if !existStock {
+	if existStock {
 		err = repository.UpdateStock(database.DbConnection, stock)
 		msg = "Success Update Stock"
 	} else {
@@ -113,12 +116,23 @@ func DeleteStock(c *gin.Context) {
 }
 
 func checkExistStock(db *sql.DB, item_id int64, canvasser_id int64) bool {
-	query := `SELECT id::int FROM stock WHERE item_id=$1 canvasser_id=$2`
+
+	var number int
+
+	query := `SELECT id::int FROM stock WHERE item_id=$1 AND canvasser_id=$2`
 	rows, err := db.Query(query, item_id, canvasser_id)
 	if err != nil {
 		return false
 	}
+	for rows.Next() {
+		rows.Scan(&number)
+	}
+
 	defer rows.Close()
 
-	return true
+	if number > 0 {
+		return true
+	} else {
+		return false
+	}
 }
