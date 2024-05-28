@@ -145,6 +145,6 @@ func Auth() gin.HandlerFunc {
 		// return
 
 		c.Next()
-		return
+		// return
 	}
 }
