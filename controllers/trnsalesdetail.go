@@ -40,6 +40,7 @@ func InsertTrnSalesDetail(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
+
 	trnsalesdetail.Subtotal = float64(trnsalesdetail.Qty) * (trnsalesdetail.Price)
 
 	err = repository.InsertTrnSalesDetail(database.DbConnection, trnsalesdetail)
@@ -66,6 +67,9 @@ func UpdateTrnSalesDetail(c *gin.Context) {
 	}
 
 	trnsalesdetail.Id = int64(id)
+
+	trnsalesdetail.Subtotal = float64(trnsalesdetail.Qty) * (trnsalesdetail.Price)
+
 	err = repository.UpdateTrnSalesDetail(database.DbConnection, trnsalesdetail)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -83,15 +87,9 @@ func DeleteTrnSalesDetail(c *gin.Context) {
 
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	err := c.ShouldBindJSON(&trnsalesdetail)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
-		return
-	}
-
 	trnsalesdetail.Id = int64(id)
 
-	err = repository.DeleteTrnSalesDetail(database.DbConnection, trnsalesdetail)
+	err := repository.DeleteTrnSalesDetail(database.DbConnection, trnsalesdetail)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
