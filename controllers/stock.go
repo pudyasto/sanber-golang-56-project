@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"database/sql"
 	"net/http"
 	"sanber-golang-56-paw/database"
 	"sanber-golang-56-paw/repository"
@@ -34,6 +35,7 @@ func GetAllStock(c *gin.Context) {
 
 func InsertStock(c *gin.Context) {
 	var stock structs.Stock
+	var msg string
 
 	err := c.ShouldBindJSON(&stock)
 	if err != nil {
@@ -41,7 +43,16 @@ func InsertStock(c *gin.Context) {
 		return
 	}
 
-	err = repository.InsertStock(database.DbConnection, stock)
+	existStock := checkExistStock(database.DbConnection, stock.ItemId, stock.CanvasserId)
+	// Kondisi jika stok sudah ada maka akan di update data qty nya
+	if !existStock {
+		err = repository.UpdateStock(database.DbConnection, stock)
+		msg = "Success Update Stock"
+	} else {
+		err = repository.InsertStock(database.DbConnection, stock)
+		msg = "Success Insert Stock"
+	}
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
@@ -49,7 +60,7 @@ func InsertStock(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"code":   200,
-		"result": "Success Insert Stock",
+		"result": msg,
 	})
 }
 
@@ -99,4 +110,15 @@ func DeleteStock(c *gin.Context) {
 		"code":   200,
 		"result": "Success Delete Stock",
 	})
+}
+
+func checkExistStock(db *sql.DB, item_id int64, canvasser_id int64) bool {
+	query := `SELECT id::int FROM stock WHERE item_id=$1 canvasser_id=$2`
+	rows, err := db.Query(query, item_id, canvasser_id)
+	if err != nil {
+		return false
+	}
+	defer rows.Close()
+
+	return true
 }
