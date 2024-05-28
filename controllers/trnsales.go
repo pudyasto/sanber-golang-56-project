@@ -34,6 +34,28 @@ func GetAllTrnSales(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
+func GetFormattedSales(c *gin.Context) {
+	var (
+		result gin.H
+	)
+
+	stock, err := repository.GetFormattedSales(database.DbConnection)
+
+	if err != nil {
+		result = gin.H{
+			"code":   500,
+			"result": err,
+		}
+	} else {
+		result = gin.H{
+			"code":   200,
+			"result": stock,
+		}
+	}
+
+	c.JSON(http.StatusOK, result)
+}
+
 func InsertTrnSales(c *gin.Context) {
 	var trnsales structs.TrnSales
 

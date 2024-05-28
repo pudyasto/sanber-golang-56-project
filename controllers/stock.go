@@ -34,6 +34,28 @@ func GetAllStock(c *gin.Context) {
 	c.JSON(http.StatusOK, result)
 }
 
+func GetFormattedStock(c *gin.Context) {
+	var (
+		result gin.H
+	)
+
+	stock, err := repository.GetFormattedStock(database.DbConnection)
+
+	if err != nil {
+		result = gin.H{
+			"code":   500,
+			"result": err,
+		}
+	} else {
+		result = gin.H{
+			"code":   200,
+			"result": stock,
+		}
+	}
+
+	c.JSON(http.StatusOK, result)
+}
+
 func InsertStock(c *gin.Context) {
 	var stock structs.Stock
 	var msg string

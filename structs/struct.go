@@ -32,15 +32,12 @@ type Stock struct {
 }
 
 type TrnSales struct {
-	Id          int64   `json:"id"`
-	CustomerId  int64   `json:"customer_id"`
-	CanvasserId int64   `json:"canvasser_id"`
-	Code        string  `json:"code"`
-	DateSales   string  `json:"date_sales"`
-	Description string  `json:"description"`
-	SubTotal    float64 `json:"subtotal"`
-	Discount    float64 `json:"discount"`
-	Total       float64 `json:"total"`
+	Id          int64  `json:"id"`
+	CustomerId  int64  `json:"customer_id"`
+	CanvasserId int64  `json:"canvasser_id"`
+	Code        string `json:"code"`
+	DateSales   string `json:"date_sales"`
+	Description string `json:"description"`
 }
 
 type TrnSalesDetail struct {
@@ -50,4 +47,23 @@ type TrnSalesDetail struct {
 	Qty        int64   `json:"qty"`
 	Price      float64 `json:"price"`
 	Subtotal   float64 `json:"subtotal"`
+}
+
+type ReportStock struct {
+	CanvasserCode string `json:"canvasser_code"`
+	CanvasserName string `json:"canvasser_name"`
+	ItemCode      string `json:"item_code"`
+	ItemName      string `json:"item_name"`
+	Qty           int64  `json:"qty"`
+}
+
+type ReportSales struct {
+	Code          string  `json:"code"`
+	DateSales     string  `json:"date_sales"`
+	Description   string  `json:"description"`
+	CanvasserCode string  `json:"canvasser_code"`
+	CanvasserName string  `json:"canvasser_name"`
+	CustomerCode  string  `json:"customer_code"`
+	CustomerName  string  `json:"customer_name"`
+	Total         float64 `json:"total"`
 }

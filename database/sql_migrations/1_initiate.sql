@@ -62,9 +62,6 @@ CREATE TABLE public.trn_sales
     code character varying(10) NOT NULL,
     date_sales timestamp NOT NULL,
     description character varying(255) NOT NULL,
-    subtotal numeric(18,2) NOT NULL,
-    discount numeric(18,2) NOT NULL,
-    total numeric(18,2) NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT fk_stock_customer FOREIGN KEY (customer_id)
         REFERENCES public.customer (id) MATCH SIMPLE

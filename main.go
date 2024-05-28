@@ -52,20 +52,12 @@ func main() {
 	auth.POST("register", controllers.InsertCanvasser)
 	auth.POST("login", controllers.GetLoginCanvasser)
 
-	router.GET("/canvasser", controllers.GetAllCanvasser)
-	router.GET("/item", controllers.GetAllItem)
-	router.GET("/customer", controllers.GetAllCustomer)
-	router.GET("/stock", controllers.GetAllStock)
-
-	router.GET("/trnsales", controllers.GetAllTrnSales)
-	router.GET("/trnsalesdetail", controllers.GetAllTrnSalesDetail)
-
 	// Group route dengan middleware BasicAuth
 	authorized := router.Group("/", Auth())
 	{
 		canvasser := authorized.Group("/canvasser")
 		{
-
+			canvasser.GET("/", controllers.GetAllCanvasser)
 			canvasser.POST("/", controllers.InsertCanvasser)
 			canvasser.PUT("/:id", controllers.UpdateCanvasser)
 			canvasser.DELETE("/:id", controllers.DeleteCanvasser)
@@ -73,7 +65,7 @@ func main() {
 
 		item := authorized.Group("/item")
 		{
-
+			item.GET("/", controllers.GetAllItem)
 			item.POST("/", controllers.InsertItem)
 			item.PUT("/:id", controllers.UpdateItem)
 			item.DELETE("/:id", controllers.DeleteItem)
@@ -82,6 +74,7 @@ func main() {
 		customer := authorized.Group("/customer")
 		{
 
+			customer.GET("/", controllers.GetAllCustomer)
 			customer.POST("/", controllers.InsertCustomer)
 			customer.PUT("/:id", controllers.UpdateCustomer)
 			customer.DELETE("/:id", controllers.DeleteCustomer)
@@ -90,6 +83,7 @@ func main() {
 		stock := authorized.Group("/stock")
 		{
 
+			stock.GET("/", controllers.GetAllStock)
 			stock.POST("/", controllers.InsertStock)
 			stock.PUT("/:item_id/:canvasser_id", controllers.UpdateStock)
 			stock.DELETE("/:item_id/:canvasser_id", controllers.DeleteStock)
@@ -97,7 +91,7 @@ func main() {
 
 		trnsales := authorized.Group("/trnsales")
 		{
-
+			trnsales.GET("/", controllers.GetAllTrnSales)
 			trnsales.POST("/", controllers.InsertTrnSales)
 			trnsales.PUT("/:id", controllers.UpdateTrnSales)
 			trnsales.DELETE("/:id", controllers.DeleteTrnSales)
@@ -105,9 +99,17 @@ func main() {
 
 		trnsalesdetail := authorized.Group("/trnsalesdetail")
 		{
+			trnsalesdetail.GET("/", controllers.GetAllTrnSalesDetail)
 			trnsalesdetail.POST("/", controllers.InsertTrnSalesDetail)
 			trnsalesdetail.PUT("/:id", controllers.UpdateTrnSalesDetail)
 			trnsalesdetail.DELETE("/:id", controllers.DeleteTrnSalesDetail)
+		}
+
+		report := authorized.Group("/report")
+		{
+
+			report.GET("/stock", controllers.GetFormattedStock)
+			report.GET("/sales", controllers.GetFormattedSales)
 		}
 	}
 

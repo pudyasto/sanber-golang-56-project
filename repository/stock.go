@@ -46,3 +46,35 @@ func DeleteStock(db *sql.DB, stock structs.Stock) (err error) {
 	errs := db.QueryRow(sql, stock.ItemId, stock.CanvasserId)
 	return errs.Err()
 }
+
+func GetFormattedStock(db *sql.DB) (results []structs.ReportStock, err error) {
+	sql := `SELECT 
+				canvasser.code as canvasser_code,
+				canvasser.name as canvasser_name,
+				item.code as item_code,
+				item.name as item_name,
+				stock.qty
+			FROM public.stock
+			JOIN item ON item.id = stock.item_id
+			JOIN canvasser ON canvasser.id = stock.canvasser_id`
+
+	rows, err := db.Query(sql)
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		var rptStock = structs.ReportStock{}
+
+		err = rows.Scan(&rptStock.CanvasserCode, &rptStock.CanvasserName, &rptStock.ItemCode, &rptStock.ItemName, &rptStock.Qty)
+		if err != nil {
+			panic(err)
+		}
+		results = append(results, rptStock)
+	}
+
+	return
+}
