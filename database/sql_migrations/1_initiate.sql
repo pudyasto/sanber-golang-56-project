@@ -84,8 +84,8 @@ CREATE TABLE public.trn_sales_detail
     trn_sales_id bigint NOT NULL,
     item_id bigint NOT NULL,
     qty bigint NOT NULL DEFAULT 0,
+    price numeric(18,2) NOT NULL,
     subtotal numeric(18,2) NOT NULL,
-    total numeric(18,2) NOT NULL,
     PRIMARY KEY (id),
     CONSTRAINT fk_stock_trn_sales FOREIGN KEY (trn_sales_id)
         REFERENCES public.trn_sales (id) MATCH SIMPLE

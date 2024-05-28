@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"sanber-golang-56-paw/database"
@@ -82,7 +83,13 @@ func InsertCanvasser(c *gin.Context) {
 		return
 	}
 
+	// Generate code
+	code := generateCodeCnv(database.DbConnection)
+	canvasser.Code = code
+
+	// Hash Password bycript
 	canvasser.Password = hashPassword(canvasser.Password)
+
 	err = repository.InsertCanvasser(database.DbConnection, canvasser)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
@@ -125,15 +132,10 @@ func DeleteCanvasser(c *gin.Context) {
 
 	id, _ := strconv.Atoi(c.Param("id"))
 	fmt.Println(id)
-	err := c.ShouldBindJSON(&canvasser)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
-		return
-	}
 
 	canvasser.Id = int64(id)
 
-	err = repository.DeleteCanvasser(database.DbConnection, canvasser)
+	err := repository.DeleteCanvasser(database.DbConnection, canvasser)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
@@ -143,6 +145,24 @@ func DeleteCanvasser(c *gin.Context) {
 		"code":   200,
 		"result": "Success Delete Canvasser",
 	})
+}
+
+func generateCodeCnv(db *sql.DB) string {
+	var number int
+	var prefix = "SL"
+
+	query := `SELECT MAX(substr(code,3,10))::int as number FROM canvasser`
+	rows, err := db.Query(query)
+	if err != nil {
+		return "SL00001"
+	}
+	defer rows.Close()
+	for rows.Next() {
+		rows.Scan(&number)
+	}
+	number++
+	code := fmt.Sprintf("%s%05d", prefix, number)
+	return code
 }
 
 // Fungsi untuk mengenkripsi password

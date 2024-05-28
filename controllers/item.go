@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"sanber-golang-56-paw/database"
@@ -41,6 +42,10 @@ func InsertItem(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
+
+	// Generate code
+	code := generateCodeItem(database.DbConnection)
+	item.Code = code
 
 	err = repository.InsertItem(database.DbConnection, item)
 	if err != nil {
@@ -83,16 +88,10 @@ func DeleteItem(c *gin.Context) {
 	var item structs.Item
 
 	id, _ := strconv.Atoi(c.Param("id"))
-	fmt.Println(id)
-	err := c.ShouldBindJSON(&item)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
-		return
-	}
 
 	item.Id = int64(id)
 
-	err = repository.DeleteItem(database.DbConnection, item)
+	err := repository.DeleteItem(database.DbConnection, item)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
@@ -102,4 +101,22 @@ func DeleteItem(c *gin.Context) {
 		"code":   200,
 		"result": "Success Delete Item",
 	})
+}
+
+func generateCodeItem(db *sql.DB) string {
+	var number int
+	var prefix = "IT"
+
+	query := `SELECT MAX(substr(code,3,10))::int as number FROM item`
+	rows, err := db.Query(query)
+	if err != nil {
+		return "IT00001"
+	}
+	defer rows.Close()
+	for rows.Next() {
+		rows.Scan(&number)
+	}
+	number++
+	code := fmt.Sprintf("%s%05d", prefix, number)
+	return code
 }

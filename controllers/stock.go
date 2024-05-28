@@ -86,16 +86,10 @@ func DeleteStock(c *gin.Context) {
 	item_id, _ := strconv.Atoi(c.Param("item_id"))
 	canvasser_id, _ := strconv.Atoi(c.Param("canvasser_id"))
 
-	err := c.ShouldBindJSON(&stock)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
-		return
-	}
-
 	stock.ItemId = int64(item_id)
 	stock.CanvasserId = int64(canvasser_id)
 
-	err = repository.DeleteStock(database.DbConnection, stock)
+	err := repository.DeleteStock(database.DbConnection, stock)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return

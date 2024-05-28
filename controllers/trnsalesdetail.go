@@ -40,6 +40,7 @@ func InsertTrnSalesDetail(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
+	trnsalesdetail.Subtotal = float64(trnsalesdetail.Qty) * (trnsalesdetail.Price)
 
 	err = repository.InsertTrnSalesDetail(database.DbConnection, trnsalesdetail)
 	if err != nil {

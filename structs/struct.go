@@ -48,6 +48,6 @@ type TrnSalesDetail struct {
 	TrnSalesId int64   `json:"trn_sales_id"`
 	ItemId     int64   `json:"item_id"`
 	Qty        int64   `json:"qty"`
+	Price      float64 `json:"price"`
 	Subtotal   float64 `json:"subtotal"`
-	Total      float64 `json:"total"`
 }

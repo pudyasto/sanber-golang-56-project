@@ -6,7 +6,7 @@ import (
 )
 
 func GetAllTrnSalesDetail(db *sql.DB) (results []structs.TrnSalesDetail, err error) {
-	sql := "SELECT id, trn_sales_id, item_id, qty, subtotal, total FROM trn_sales_detail"
+	sql := "SELECT id, trn_sales_id, item_id, qty, price, subtotal FROM trn_sales_detail"
 
 	rows, err := db.Query(sql)
 
@@ -19,7 +19,7 @@ func GetAllTrnSalesDetail(db *sql.DB) (results []structs.TrnSalesDetail, err err
 	for rows.Next() {
 		var trn_sales_detail = structs.TrnSalesDetail{}
 
-		err = rows.Scan(&trn_sales_detail.Id, &trn_sales_detail.TrnSalesId, &trn_sales_detail.ItemId, &trn_sales_detail.Qty, &trn_sales_detail.Subtotal, &trn_sales_detail.Total)
+		err = rows.Scan(&trn_sales_detail.Id, &trn_sales_detail.TrnSalesId, &trn_sales_detail.ItemId, &trn_sales_detail.Qty, &trn_sales_detail.Price, &trn_sales_detail.Subtotal)
 		if err != nil {
 			panic(err)
 		}
@@ -30,14 +30,14 @@ func GetAllTrnSalesDetail(db *sql.DB) (results []structs.TrnSalesDetail, err err
 }
 
 func InsertTrnSalesDetail(db *sql.DB, trn_sales_detail structs.TrnSalesDetail) (err error) {
-	sql := "INSERT INTO public.trn_sales_detail(trn_sales_id, item_id, qty, subtotal, total) VALUES ($1, $2, $3, $4, $5)"
-	errs := db.QueryRow(sql, trn_sales_detail.TrnSalesId, trn_sales_detail.ItemId, trn_sales_detail.Qty, trn_sales_detail.Subtotal, trn_sales_detail.Total)
+	sql := "INSERT INTO public.trn_sales_detail(trn_sales_id, item_id, qty, price, subtotal) VALUES ($1, $2, $3, $4, $5)"
+	errs := db.QueryRow(sql, trn_sales_detail.TrnSalesId, trn_sales_detail.ItemId, trn_sales_detail.Qty, trn_sales_detail.Price, trn_sales_detail.Subtotal)
 	return errs.Err()
 }
 
 func UpdateTrnSalesDetail(db *sql.DB, trn_sales_detail structs.TrnSalesDetail) (err error) {
-	sql := "UPDATE public.trn_sales_detail SET trn_sales_id=$1, item_id=$2, qty=$3, subtotal=$4, total=$5 WHERE id=$6"
-	errs := db.QueryRow(sql, trn_sales_detail.TrnSalesId, trn_sales_detail.ItemId, trn_sales_detail.Qty, trn_sales_detail.Subtotal, trn_sales_detail.Total, trn_sales_detail.Id)
+	sql := "UPDATE public.trn_sales_detail SET trn_sales_id=$1, item_id=$2, qty=$3, price=$4, subtotal=$5 WHERE id=$6"
+	errs := db.QueryRow(sql, trn_sales_detail.TrnSalesId, trn_sales_detail.ItemId, trn_sales_detail.Qty, trn_sales_detail.Price, trn_sales_detail.Subtotal, trn_sales_detail.Id)
 	return errs.Err()
 }
 
