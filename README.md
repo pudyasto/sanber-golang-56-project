@@ -34,3 +34,27 @@ Berikut adalah dokumentasi API:
 | 	POST	| 	{{base_url}}/stock	| 	item_id, canvasser_id, qty	 | menambah stock baru |
 | 	PUT	| 	{{base_url}}/stock/:item_id/:canvasser_id	| 	item_id, canvasser_id, qty	 | mengubah data stock |
 | 	DELETE	| 	{{base_url}}/stock/:item_id/:canvasser_id   |  | menghapus data stock |
+
+3. Transaksi :
+
+| 	Method	 | 	Path	 | 	Parameter	 | 	Keterangan	 | 
+| 	:-----:	 | 	:-----:	 | 	:-----:	 | 	:-----:	 |  
+| 	1.	| 	Transaksi Sales Header	|  |  |
+| 	GET	| 	{{base_url}}/trnsales	|  | menampilkan semua data transaksi sales header |
+| 	POST	| 	{{base_url}}/trnsales	| 	customer_id, canvasser_id, date_sales, description	 | menambah transaksi sales header baru |
+| 	PUT	| 	{{base_url}}/trnsales/:id	| 	customer_id, canvasser_id, date_sales, description	 | mengubah data transaksi sales header |
+| 	DELETE	| 	{{base_url}}/trnsales/:id   |  | menghapus data transaksi sales header |
+| 	2.	| 	Transaksi Sales Detail	|  |  |
+| 	GET	| 	{{base_url}}/trnsalesdetail	|  | menampilkan semua data transaksi sales detail |
+| 	POST	| 	{{base_url}}/trnsalesdetail	| 	trn_sales_id, item_id, qty, price	 | menambah transaksi sales detail baru |
+| 	PUT	| 	{{base_url}}/trnsalesdetail/:id	| 	trn_sales_id, item_id, qty, price	 | mengubah data transaksi sales detail |
+| 	DELETE	| 	{{base_url}}/trnsalesdetail/:id   |  | menghapus data transaksi sales detail |
+
+4. Laporan :
+
+| 	Method	 | 	Path	 | 	Parameter	 | 	Keterangan	 | 
+| 	:-----:	 | 	:-----:	 | 	:-----:	 | 	:-----:	 |  
+| 	1.	| 	Report Canvasser Stock	|  |  |
+| 	GET	| 	{{base_url}}/report/stock	|  | menampilkan semua data stok per canvasser |
+| 	2.	| 	Transaksi Sales Detail	|  |  |
+| 	GET	| 	{{base_url}}/report/sales	|  | menampilkan semua data transaksi per sales dengan total transaksi |
