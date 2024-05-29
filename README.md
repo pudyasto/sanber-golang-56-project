@@ -2,6 +2,9 @@
 
 Berikut adalah dokumentasi API:
 
-| 	Method	 | 	Path	 | 	Keterangan	 | 
-| 	:-----:	 | 	:-----:	 | 	:-----:	 | 
-| 	GET	| 	/segitiga-sama-sisi?alas=7&tinggi=10&hitung=luas	| 	Menghitung Luas Segitiga	 | 
+1. Auth :
+
+| 	Method	 | 	Path	 | 	Parameter	 | 	Keterangan	 | 
+| 	:-----:	 | 	:-----:	 | 	:-----:	 | 	:-----:	 |  
+| 	POST	| 	{{base_url}}/auth/register	| 	name, phone, username, password	 | registrasi canvasser baru |
+| 	POST	| 	{{base_url}}/auth/login	| 	username, password	 | login canvasser jika berhasil maka akan muncul token |
