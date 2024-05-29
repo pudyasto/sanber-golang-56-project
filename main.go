@@ -3,9 +3,11 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"net/http"
 	"os"
 	"sanber-golang-56-paw/controllers"
 	"sanber-golang-56-paw/database"
+	"sanber-golang-56-paw/jwt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -128,23 +130,19 @@ func envPortOr(port string) string {
 // Fungi Log yang berguna sebagai middleware
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// uname, pwd, ok := c.Request.BasicAuth()
-		// if !ok {
-		// 	c.JSON(http.StatusUnauthorized, gin.H{"error": "Username atau Password tidak boleh kosong"})
-		// 	c.Abort()
-		// 	return
-		// }
+		token := c.GetHeader("token")
+		if token == "" {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token wajib di isi"})
+			c.Abort()
+			return
+		}
 
-		// if (uname == "admin" && pwd == "password") || (uname == "editor" && pwd == "secret") {
-		// 	c.Next()
-		// 	return
-		// }
+		if jwt.CheckToken(token) {
+			c.Next()
+			return
+		}
 
-		// c.JSON(http.StatusUnauthorized, gin.H{"error": "Anda tidak Tidak Memiliki Hak Akses"})
-		// c.Abort()
-		// return
-
-		c.Next()
-		// return
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Anda tidak Tidak Memiliki Hak Akses"})
+		c.Abort()
 	}
 }

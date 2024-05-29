@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"net/http"
 	"sanber-golang-56-paw/database"
+	"sanber-golang-56-paw/jwt"
 	"sanber-golang-56-paw/repository"
 	"sanber-golang-56-paw/structs"
+
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -40,7 +42,8 @@ func GetLoginCanvasser(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&canvasser)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Data Username dan Password Wajib Di Isi"})
+		return
 	}
 
 	var (
@@ -52,7 +55,7 @@ func GetLoginCanvasser(c *gin.Context) {
 
 	dataCanvasser, err := repository.GetLoginCanvasser(database.DbConnection, username)
 
-	if len(dataCanvasser) > 1 && checkPasswordHash(password, dataCanvasser[0].Password) {
+	if len(dataCanvasser) > 0 && checkPasswordHash(password, dataCanvasser[0].Password) {
 		if err != nil {
 			result = gin.H{
 				"code":   500,
@@ -62,6 +65,7 @@ func GetLoginCanvasser(c *gin.Context) {
 			result = gin.H{
 				"code":   200,
 				"result": dataCanvasser[0],
+				"token":  jwt.GenerateToken(),
 			}
 		}
 		c.JSON(http.StatusOK, result)
