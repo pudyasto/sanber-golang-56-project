@@ -36,8 +36,8 @@ func InsertItem(db *sql.DB, item structs.Item) (err error) {
 }
 
 func UpdateItem(db *sql.DB, item structs.Item) (err error) {
-	sql := "UPDATE public.item SET code=$1, name=$2, price=$3 WHERE id=$4"
-	errs := db.QueryRow(sql, item.Code, item.Name, item.Price, item.Id)
+	sql := "UPDATE public.item SET name=$1, price=$2 WHERE id=$3"
+	errs := db.QueryRow(sql, item.Name, item.Price, item.Id)
 	return errs.Err()
 }
 

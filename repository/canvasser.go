@@ -59,8 +59,8 @@ func InsertCanvasser(db *sql.DB, canvasser structs.Canvasser) (err error) {
 }
 
 func UpdateCanvasser(db *sql.DB, canvasser structs.Canvasser) (err error) {
-	sql := "UPDATE public.canvasser SET code=$1, name=$2, phone=$3, username=$4, password=$5 WHERE id=$6"
-	errs := db.QueryRow(sql, canvasser.Code, canvasser.Name, canvasser.Phone, canvasser.Username, canvasser.Password, canvasser.Id)
+	sql := "UPDATE public.canvasser SET name=$1, phone=$2, username=$3, password=$4 WHERE id=$5"
+	errs := db.QueryRow(sql, canvasser.Name, canvasser.Phone, canvasser.Username, canvasser.Password, canvasser.Id)
 	return errs.Err()
 }
 

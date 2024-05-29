@@ -36,8 +36,8 @@ func InsertCustomer(db *sql.DB, customer structs.Customer) (err error) {
 }
 
 func UpdateCustomer(db *sql.DB, customer structs.Customer) (err error) {
-	sql := "UPDATE public.customer SET code=$1, name=$2, address=$3, email=$4 WHERE id=$5"
-	errs := db.QueryRow(sql, customer.Code, customer.Name, customer.Address, customer.Email, customer.Id)
+	sql := "UPDATE public.customer SET  name=$1, address=$2, email=$3 WHERE id=$4"
+	errs := db.QueryRow(sql, customer.Name, customer.Address, customer.Email, customer.Id)
 	return errs.Err()
 }
 
