@@ -36,7 +36,7 @@ func InsertTrnSales(db *sql.DB, trn_sales structs.TrnSales) (err error) {
 }
 
 func UpdateTrnSales(db *sql.DB, trn_sales structs.TrnSales) (err error) {
-	sql := "UPDATE public.trn_sales SET customer_id=$1, canvasser_id=$2, date_sales=$3, description=$4 WHERE id=$8"
+	sql := "UPDATE public.trn_sales SET customer_id=$1, canvasser_id=$2, date_sales=$3, description=$4 WHERE id=$5"
 	errs := db.QueryRow(sql, trn_sales.CustomerId, trn_sales.CanvasserId, trn_sales.DateSales, trn_sales.Description, trn_sales.Id)
 	return errs.Err()
 }
