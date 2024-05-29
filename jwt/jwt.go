@@ -2,9 +2,11 @@ package jwt
 
 import (
 	"log"
+	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/joho/godotenv"
 )
 
 // Define a custom claims type
@@ -14,7 +16,9 @@ type MyCustomClaims struct {
 }
 
 func GenerateToken() (generatedToken string) {
-	signingKey := []byte("Ed1bBrCKct06xSi2ii6wR8B3IoXbqnvg")
+	godotenv.Load("config/.env")
+	appkey := os.Getenv("APP_KEY")
+	signingKey := []byte(appkey)
 
 	claims := MyCustomClaims{
 		"bar",
@@ -34,7 +38,8 @@ func GenerateToken() (generatedToken string) {
 }
 
 func CheckToken(tokenString string) bool {
-	signingKey := []byte("Ed1bBrCKct06xSi2ii6wR8B3IoXbqnvg")
+	appkey := os.Getenv("APP_KEY")
+	signingKey := []byte(appkey)
 	parsedToken, err := jwt.ParseWithClaims(tokenString, &MyCustomClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return signingKey, nil
 	})
