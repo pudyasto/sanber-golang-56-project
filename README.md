@@ -6,8 +6,8 @@ Berikut adalah dokumentasi API:
 
 | 	Method	 | 	Path	 | 	Parameter	 | 	Keterangan	 | 
 | 	:-----:	 | 	:-----:	 | 	:-----:	 | 	:-----:	 |  
-| 	POST	| 	{{base_url}}/auth/register	| 	name, phone, username, password	 | registrasi canvasser baru |
-| 	POST	| 	{{base_url}}/auth/login	| 	username, password	 | login canvasser jika berhasil maka akan muncul token |
+| 	POST	| 	{{base_url}}/auth/register	| 	body : { name, phone, username, password }	 | registrasi canvasser baru |
+| 	POST	| 	{{base_url}}/auth/login	| 	body : { username, password }	 | login canvasser jika berhasil maka akan muncul token |
 
 
 2. Master Data :
@@ -15,10 +15,10 @@ Berikut adalah dokumentasi API:
 | 	Method	 | 	Path	 | 	Parameter	 | 	Keterangan	 | 
 | 	:-----:	 | 	:-----:	 | 	:-----:	 | 	:-----:	 |  
 | 	1.	| 	Canvasser	|  |  |
-| 	GET	| 	{{base_url}}/canvasser	|  | menampilkan semua data canvasser |
-| 	POST	| 	{{base_url}}/canvasser	| 	name, phone, username, password	 | menambah canvasser baru |
-| 	PUT	| 	{{base_url}}/canvasser/:id	| 	name, phone, username, password	 | mengubah data canvasser |
-| 	DELETE	| 	{{base_url}}/canvasser/:id	|  | menghapus data canvasser |
+| 	GET	| 	{{base_url}}/canvasser	| header : { token } | menampilkan semua data canvasser |
+| 	POST	| 	{{base_url}}/canvasser	| header : { token } <br/> body : { name, phone, username, password }	 | menambah canvasser baru |
+| 	PUT	| 	{{base_url}}/canvasser/:id	| 	header : { token } <br/> body : { name, phone, username, password }	 | mengubah data canvasser |
+| 	DELETE	| 	{{base_url}}/canvasser/:id	| header : { token } | menghapus data canvasser |
 | 	2.	| 	Item	|  |  |
 | 	GET	| 	{{base_url}}/item	|  | menampilkan semua data item |
 | 	POST	| 	{{base_url}}/item	| 	name, price	 | menambah item baru |
