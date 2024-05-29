@@ -64,7 +64,9 @@ func GetLoginCanvasser(c *gin.Context) {
 		} else {
 			result = gin.H{
 				"code":   200,
-				"result": dataCanvasser[0],
+				"result": "Login Berhasil",
+				"nama":   dataCanvasser[0].Name,
+				"phone":  dataCanvasser[0].Phone,
 				"token":  jwt.GenerateToken(),
 			}
 		}
