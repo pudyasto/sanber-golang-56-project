@@ -40,7 +40,6 @@ func main() {
 		fmt.Println("DB Connection Failed")
 		panic(err)
 	} else {
-
 		fmt.Println("DB Connection Success")
 	}
 
@@ -130,9 +129,17 @@ func envPortOr(port string) string {
 // Fungi Log yang berguna sebagai middleware
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		var (
+			result gin.H
+		)
 		token := c.GetHeader("token")
 		if token == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Token wajib di isi"})
+			result = gin.H{
+				"success": false,
+				"message": "Token wajib di isi",
+				"data":    []string{},
+			}
+			c.JSON(http.StatusUnauthorized, result)
 			c.Abort()
 			return
 		}
@@ -142,7 +149,12 @@ func Auth() gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Anda tidak Tidak Memiliki Hak Akses"})
+		result = gin.H{
+			"success": false,
+			"message": "Anda tidak Tidak Memiliki Hak Akses",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusUnauthorized, result)
 		c.Abort()
 	}
 }

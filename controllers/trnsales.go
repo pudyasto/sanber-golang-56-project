@@ -21,17 +21,20 @@ func GetAllTrnSales(c *gin.Context) {
 
 	if err != nil {
 		result = gin.H{
-			"code":   500,
-			"result": err,
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
 		}
+		c.JSON(http.StatusInternalServerError, result)
 	} else {
 		result = gin.H{
-			"code":   200,
-			"result": trnsales,
+			"success": true,
+			"message": "Berhasil mengambil seluruh data transaksi sales",
+			"data":    trnsales,
 		}
-	}
 
-	c.JSON(http.StatusOK, result)
+		c.JSON(http.StatusOK, result)
+	}
 }
 
 func GetFormattedSales(c *gin.Context) {
@@ -39,29 +42,41 @@ func GetFormattedSales(c *gin.Context) {
 		result gin.H
 	)
 
-	stock, err := repository.GetFormattedSales(database.DbConnection)
+	formattedSales, err := repository.GetFormattedSales(database.DbConnection)
 
 	if err != nil {
 		result = gin.H{
-			"code":   500,
-			"result": err,
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
 		}
+		c.JSON(http.StatusInternalServerError, result)
 	} else {
 		result = gin.H{
-			"code":   200,
-			"result": stock,
+			"success": true,
+			"message": "Berhasil mengambil seluruh data transaksi sales",
+			"data":    formattedSales,
 		}
-	}
 
-	c.JSON(http.StatusOK, result)
+		c.JSON(http.StatusOK, result)
+	}
 }
 
 func InsertTrnSales(c *gin.Context) {
+
+	var (
+		result gin.H
+	)
 	var trnsales structs.TrnSales
 
 	err := c.ShouldBindJSON(&trnsales)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
@@ -73,41 +88,66 @@ func InsertTrnSales(c *gin.Context) {
 
 	err = repository.InsertTrnSales(database.DbConnection, trnsales)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":   200,
-		"result": "Success Insert TrnSales",
-	})
+	result = gin.H{
+		"success": true,
+		"message": "Berhasil menambahkan data transaksi sales",
+		"data":    []string{},
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 func UpdateTrnSales(c *gin.Context) {
+	var (
+		result gin.H
+	)
 	var trnsales structs.TrnSales
 
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	err := c.ShouldBindJSON(&trnsales)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
 	trnsales.Id = int64(id)
 	err = repository.UpdateTrnSales(database.DbConnection, trnsales)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":   200,
-		"result": "Success Update TrnSales",
-	})
+	result = gin.H{
+		"success": true,
+		"message": "Berhasil mengubah data transaksi sales",
+		"data":    []string{},
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 func DeleteTrnSales(c *gin.Context) {
+	var (
+		result gin.H
+	)
 	var trnsales structs.TrnSales
 
 	id, _ := strconv.Atoi(c.Param("id"))
@@ -115,14 +155,21 @@ func DeleteTrnSales(c *gin.Context) {
 
 	err := repository.DeleteTrnSales(database.DbConnection, trnsales)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": false,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":   200,
-		"result": "Success Delete TrnSales",
-	})
+	result = gin.H{
+		"success": true,
+		"message": "Berhasil menghapus data transaksi sales",
+		"data":    []string{},
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 func generateCodeTrnSal(db *sql.DB) string {

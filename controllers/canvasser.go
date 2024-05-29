@@ -24,31 +24,40 @@ func GetAllCanvasser(c *gin.Context) {
 
 	if err != nil {
 		result = gin.H{
-			"code":   500,
-			"result": err,
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
 		}
+		c.JSON(http.StatusInternalServerError, result)
 	} else {
 		result = gin.H{
-			"code":   200,
-			"result": canvasser,
+			"success": true,
+			"message": "Berhasil mengambil seluruh data canvasser",
+			"data":    canvasser,
 		}
+
+		c.JSON(http.StatusOK, result)
 	}
 
-	c.JSON(http.StatusOK, result)
 }
 
 func GetLoginCanvasser(c *gin.Context) {
-	var canvasser structs.Canvasser
-
-	err := c.ShouldBindJSON(&canvasser)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Data Username dan Password Wajib Di Isi"})
-		return
-	}
 
 	var (
 		result gin.H
 	)
+	var canvasser structs.Canvasser
+
+	err := c.ShouldBindJSON(&canvasser)
+	if err != nil {
+		result = gin.H{
+			"success": false,
+			"message": "Data Username dan Password Wajib Di Isi",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusUnauthorized, result)
+		return
+	}
 
 	username := canvasser.Username
 	password := canvasser.Password
@@ -58,34 +67,51 @@ func GetLoginCanvasser(c *gin.Context) {
 	if len(dataCanvasser) > 0 && checkPasswordHash(password, dataCanvasser[0].Password) {
 		if err != nil {
 			result = gin.H{
-				"code":   500,
-				"result": err,
+				"success": false,
+				"message": "Internal Server Error",
+				"data":    []string{},
 			}
+			c.JSON(http.StatusInternalServerError, result)
 		} else {
+			user := make(map[string]string)
+
+			// Menambahkan elemen ke map
+			user["id"] = strconv.Itoa(int(dataCanvasser[0].Id))
+			user["nama"] = dataCanvasser[0].Name
+			user["phone"] = dataCanvasser[0].Phone
+
 			result = gin.H{
-				"code":   200,
-				"result": "Login Berhasil",
-				"nama":   dataCanvasser[0].Name,
-				"phone":  dataCanvasser[0].Phone,
-				"token":  jwt.GenerateToken(),
+				"success": true,
+				"message": "Login Berhasil",
+				"data":    user,
+				"token":   jwt.GenerateToken(),
 			}
+			c.JSON(http.StatusOK, result)
 		}
-		c.JSON(http.StatusOK, result)
 	} else {
 		result = gin.H{
-			"code":   401,
-			"result": "Username atau Password anda Salah",
+			"success": false,
+			"message": "Username atau Password anda Salah",
+			"data":    []string{},
 		}
 		c.JSON(http.StatusUnauthorized, result)
 	}
 }
 
 func InsertCanvasser(c *gin.Context) {
+	var (
+		result gin.H
+	)
 	var canvasser structs.Canvasser
 
 	err := c.ShouldBindJSON(&canvasser)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": false,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
@@ -98,24 +124,39 @@ func InsertCanvasser(c *gin.Context) {
 
 	err = repository.InsertCanvasser(database.DbConnection, canvasser)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": false,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":   200,
-		"result": "Success Insert Canvasser",
-	})
+	result = gin.H{
+		"success": true,
+		"message": "Berhasil menambahkan data canvasser",
+		"data":    []string{},
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 func UpdateCanvasser(c *gin.Context) {
+	var (
+		result gin.H
+	)
 	var canvasser structs.Canvasser
 
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	err := c.ShouldBindJSON(&canvasser)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": false,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
@@ -123,17 +164,27 @@ func UpdateCanvasser(c *gin.Context) {
 	canvasser.Password = hashPassword(canvasser.Password)
 	err = repository.UpdateCanvasser(database.DbConnection, canvasser)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": false,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":   200,
-		"result": "Success Update Canvasser",
-	})
+	result = gin.H{
+		"success": true,
+		"message": "Berhasil mengubah data canvasser",
+		"data":    []string{},
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 func DeleteCanvasser(c *gin.Context) {
+	var (
+		result gin.H
+	)
 	var canvasser structs.Canvasser
 
 	id, _ := strconv.Atoi(c.Param("id"))
@@ -143,14 +194,21 @@ func DeleteCanvasser(c *gin.Context) {
 
 	err := repository.DeleteCanvasser(database.DbConnection, canvasser)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": false,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":   200,
-		"result": "Success Delete Canvasser",
-	})
+	result = gin.H{
+		"success": true,
+		"message": "Berhasil menghapus data canvasser",
+		"data":    []string{},
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 func generateCodeCnv(db *sql.DB) string {

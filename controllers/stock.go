@@ -21,17 +21,20 @@ func GetAllStock(c *gin.Context) {
 
 	if err != nil {
 		result = gin.H{
-			"code":   500,
-			"result": err,
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
 		}
+		c.JSON(http.StatusInternalServerError, result)
 	} else {
 		result = gin.H{
-			"code":   200,
-			"result": stock,
+			"success": true,
+			"message": "Berhasil mengambil seluruh data stock",
+			"data":    stock,
 		}
-	}
 
-	c.JSON(http.StatusOK, result)
+		c.JSON(http.StatusOK, result)
+	}
 }
 
 func GetFormattedStock(c *gin.Context) {
@@ -43,26 +46,37 @@ func GetFormattedStock(c *gin.Context) {
 
 	if err != nil {
 		result = gin.H{
-			"code":   500,
-			"result": err,
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
 		}
+		c.JSON(http.StatusInternalServerError, result)
 	} else {
 		result = gin.H{
-			"code":   200,
-			"result": stock,
+			"success": true,
+			"message": "Berhasil mengambil seluruh data stock",
+			"data":    stock,
 		}
-	}
 
-	c.JSON(http.StatusOK, result)
+		c.JSON(http.StatusOK, result)
+	}
 }
 
 func InsertStock(c *gin.Context) {
+	var (
+		result gin.H
+	)
 	var stock structs.Stock
 	var msg string
 
 	err := c.ShouldBindJSON(&stock)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
@@ -79,17 +93,27 @@ func InsertStock(c *gin.Context) {
 	}
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":   200,
-		"result": msg,
-	})
+	result = gin.H{
+		"success": true,
+		"message": msg,
+		"data":    []string{},
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 func UpdateStock(c *gin.Context) {
+	var (
+		result gin.H
+	)
 	var stock structs.Stock
 
 	item_id, _ := strconv.Atoi(c.Param("item_id"))
@@ -97,7 +121,12 @@ func UpdateStock(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&stock)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": false,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
@@ -106,17 +135,27 @@ func UpdateStock(c *gin.Context) {
 
 	err = repository.UpdateStock(database.DbConnection, stock)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": false,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":   200,
-		"result": "Success Update Stock",
-	})
+	result = gin.H{
+		"success": true,
+		"message": "Berhasil mengubah data stock",
+		"data":    []string{},
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 func DeleteStock(c *gin.Context) {
+	var (
+		result gin.H
+	)
 	var stock structs.Stock
 
 	item_id, _ := strconv.Atoi(c.Param("item_id"))
@@ -127,14 +166,21 @@ func DeleteStock(c *gin.Context) {
 
 	err := repository.DeleteStock(database.DbConnection, stock)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": false,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":   200,
-		"result": "Success Delete Stock",
-	})
+	result = gin.H{
+		"success": true,
+		"message": "Berhasil menghapus data stock",
+		"data":    []string{},
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 func checkExistStock(db *sql.DB, item_id int64, canvasser_id int64) bool {

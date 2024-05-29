@@ -21,25 +21,36 @@ func GetAllItem(c *gin.Context) {
 
 	if err != nil {
 		result = gin.H{
-			"code":   500,
-			"result": err,
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
 		}
+		c.JSON(http.StatusInternalServerError, result)
 	} else {
 		result = gin.H{
-			"code":   200,
-			"result": item,
+			"success": true,
+			"message": "Berhasil mengambil seluruh data item",
+			"data":    item,
 		}
-	}
 
-	c.JSON(http.StatusOK, result)
+		c.JSON(http.StatusOK, result)
+	}
 }
 
 func InsertItem(c *gin.Context) {
+	var (
+		result gin.H
+	)
 	var item structs.Item
 
 	err := c.ShouldBindJSON(&item)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
@@ -49,24 +60,39 @@ func InsertItem(c *gin.Context) {
 
 	err = repository.InsertItem(database.DbConnection, item)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":   200,
-		"result": "Success Insert Item",
-	})
+	result = gin.H{
+		"success": true,
+		"message": "Berhasil menambahkan data item",
+		"data":    []string{},
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 func UpdateItem(c *gin.Context) {
+	var (
+		result gin.H
+	)
 	var item structs.Item
 
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	err := c.ShouldBindJSON(&item)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
@@ -74,17 +100,27 @@ func UpdateItem(c *gin.Context) {
 
 	err = repository.UpdateItem(database.DbConnection, item)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":   200,
-		"result": "Success Update Item",
-	})
+	result = gin.H{
+		"success": true,
+		"message": "Berhasil mengubah data item",
+		"data":    []string{},
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 func DeleteItem(c *gin.Context) {
+	var (
+		result gin.H
+	)
 	var item structs.Item
 
 	id, _ := strconv.Atoi(c.Param("id"))
@@ -93,14 +129,21 @@ func DeleteItem(c *gin.Context) {
 
 	err := repository.DeleteItem(database.DbConnection, item)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": false,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":   200,
-		"result": "Success Delete Item",
-	})
+	result = gin.H{
+		"success": true,
+		"message": "Berhasil menghapus data item",
+		"data":    []string{},
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 func generateCodeItem(db *sql.DB) string {

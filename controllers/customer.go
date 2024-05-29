@@ -13,33 +13,44 @@ import (
 )
 
 func GetAllCustomer(c *gin.Context) {
+
 	var (
 		result gin.H
 	)
-
 	customer, err := repository.GetAllCustomer(database.DbConnection)
 
 	if err != nil {
 		result = gin.H{
-			"code":   500,
-			"result": err,
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
 		}
+		c.JSON(http.StatusInternalServerError, result)
 	} else {
 		result = gin.H{
-			"code":   200,
-			"result": customer,
+			"success": true,
+			"message": "Berhasil mengambil seluruh data customer",
+			"data":    customer,
 		}
-	}
 
-	c.JSON(http.StatusOK, result)
+		c.JSON(http.StatusOK, result)
+	}
 }
 
 func InsertCustomer(c *gin.Context) {
+	var (
+		result gin.H
+	)
 	var customer structs.Customer
 
 	err := c.ShouldBindJSON(&customer)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
@@ -49,24 +60,39 @@ func InsertCustomer(c *gin.Context) {
 
 	err = repository.InsertCustomer(database.DbConnection, customer)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":   200,
-		"result": "Success Insert Customer",
-	})
+	result = gin.H{
+		"success": true,
+		"message": "Berhasil menambahkan data customer",
+		"data":    []string{},
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 func UpdateCustomer(c *gin.Context) {
+	var (
+		result gin.H
+	)
 	var customer structs.Customer
 
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	err := c.ShouldBindJSON(&customer)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": false,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
@@ -74,17 +100,27 @@ func UpdateCustomer(c *gin.Context) {
 
 	err = repository.UpdateCustomer(database.DbConnection, customer)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": false,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":   200,
-		"result": "Success Update Customer",
-	})
+	result = gin.H{
+		"success": true,
+		"message": "Berhasil mengubah data customer",
+		"data":    []string{},
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 func DeleteCustomer(c *gin.Context) {
+	var (
+		result gin.H
+	)
 	var customer structs.Customer
 
 	id, _ := strconv.Atoi(c.Param("id"))
@@ -93,14 +129,21 @@ func DeleteCustomer(c *gin.Context) {
 
 	err := repository.DeleteCustomer(database.DbConnection, customer)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": false,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":   200,
-		"result": "Success Delete Customer",
-	})
+	result = gin.H{
+		"success": true,
+		"message": "Berhasil menghapus data customer",
+		"data":    []string{},
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 func generateCodeCust(db *sql.DB) string {

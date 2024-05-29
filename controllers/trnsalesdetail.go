@@ -21,41 +21,61 @@ func GetAllTrnSalesDetail(c *gin.Context) {
 
 	if err != nil {
 		result = gin.H{
-			"code":   500,
-			"result": err,
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
 		}
+		c.JSON(http.StatusInternalServerError, result)
 	} else {
 		result = gin.H{
-			"code":   200,
-			"result": trnsalesdetail,
+			"success": true,
+			"message": "Berhasil mengambil seluruh data transaksi sales detail",
+			"data":    trnsalesdetail,
 		}
-	}
 
-	c.JSON(http.StatusOK, result)
+		c.JSON(http.StatusOK, result)
+	}
 }
 
 func InsertTrnSalesDetail(c *gin.Context) {
+	var (
+		result gin.H
+	)
 	var trnsalesdetail structs.TrnSalesDetail
 
 	err := c.ShouldBindJSON(&trnsalesdetail)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
 	currStock := checkStockMin(database.DbConnection, trnsalesdetail.TrnSalesId, trnsalesdetail.ItemId)
 
 	if currStock < trnsalesdetail.Qty {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Stock tidak mencukupi!"})
+		result = gin.H{
+			"success": true,
+			"message": "Stock tidak mencukupi!",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusForbidden, result)
 		return
-
 	}
 
 	trnsalesdetail.Subtotal = float64(trnsalesdetail.Qty) * (trnsalesdetail.Price)
 
 	err = repository.InsertTrnSalesDetail(database.DbConnection, trnsalesdetail)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": true,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
@@ -63,20 +83,30 @@ func InsertTrnSalesDetail(c *gin.Context) {
 
 	updateStock(database.DbConnection, trnsalesdetail.TrnSalesId, trnsalesdetail.ItemId, updatedQty)
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":   200,
-		"result": "Success Insert TrnSalesDetail",
-	})
+	result = gin.H{
+		"success": true,
+		"message": "Berhasil menambahkan data transaksi sales detail",
+		"data":    []string{},
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 func UpdateTrnSalesDetail(c *gin.Context) {
+	var (
+		result gin.H
+	)
 	var trnsalesdetail structs.TrnSalesDetail
 
 	id, _ := strconv.Atoi(c.Param("id"))
 
 	err := c.ShouldBindJSON(&trnsalesdetail)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": false,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
@@ -86,17 +116,27 @@ func UpdateTrnSalesDetail(c *gin.Context) {
 
 	err = repository.UpdateTrnSalesDetail(database.DbConnection, trnsalesdetail)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": false,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":   200,
-		"result": "Success Update TrnSalesDetail",
-	})
+	result = gin.H{
+		"success": true,
+		"message": "Berhasil mengubah data transaksi sales detail",
+		"data":    []string{},
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 func DeleteTrnSalesDetail(c *gin.Context) {
+	var (
+		result gin.H
+	)
 	var trnsalesdetail structs.TrnSalesDetail
 
 	id, _ := strconv.Atoi(c.Param("id"))
@@ -108,14 +148,21 @@ func DeleteTrnSalesDetail(c *gin.Context) {
 	err := repository.DeleteTrnSalesDetail(database.DbConnection, trnsalesdetail)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		result = gin.H{
+			"success": false,
+			"message": "Internal Server Error",
+			"data":    []string{},
+		}
+		c.JSON(http.StatusInternalServerError, result)
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":   200,
-		"result": "Success Delete TrnSalesDetail",
-	})
+	result = gin.H{
+		"success": true,
+		"message": "Berhasil menghapus data transaksi sales detail",
+		"data":    []string{},
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 func checkStockMin(db *sql.DB, trn_sales_id int64, item_id int64) int64 {
