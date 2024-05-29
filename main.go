@@ -49,7 +49,7 @@ func main() {
 	defer db.Close()
 
 	router := gin.Default()
-
+	router.GET("/", controllers.Index)
 	auth := router.Group("/auth")
 	auth.POST("register", controllers.InsertCanvasser)
 	auth.POST("login", controllers.GetLoginCanvasser)
